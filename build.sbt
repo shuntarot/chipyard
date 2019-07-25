@@ -72,20 +72,28 @@ lazy val rocketMacros  = (project in rocketChipDir / "macros")
 lazy val rocketchip = (project in rocketChipDir / "src")
   .settings(
     commonSettings,
+    exportJars := true,
     scalaSource in Compile := baseDirectory.value / "main" / "scala",
     resourceDirectory in Compile := baseDirectory.value / "main" / "resources")
   .dependsOn(chisel, hardfloat, rocketMacros)
 
 lazy val testchipip = (project in file("generators/testchipip"))
   .dependsOn(rocketchip)
-  .settings(commonSettings)
+  .settings(
+    commonSettings,
+    exportJars := true)
 
 lazy val example = conditionalDependsOn(project in file("generators/example"))
   .dependsOn(boom, hwacha, sifive_blocks, sifive_cache)
   .settings(commonSettings)
 
-lazy val utilities = conditionalDependsOn(project in file("generators/utilities"))
-  .settings(commonSettings)
+  //.dependsOn(testchipip % "run->run")
+lazy val utilities = (project in file("generators/utilities"))
+  .settings(commonSettings,
+  unmanagedJars in Runtime ++= (testchipip / Compile / exportedProducts).value ++ 
+                               (rocketchip / Compile / exportedProducts).value
+  
+  )
 
 lazy val icenet = (project in file("generators/icenet"))
   .dependsOn(rocketchip, testchipip)

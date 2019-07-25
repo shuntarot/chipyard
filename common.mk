@@ -10,7 +10,12 @@ lookup_scala_srcs = $(shell find -L $(1)/ -iname "*.scala" 2> /dev/null)
 
 PACKAGES=$(addprefix generators/, rocket-chip testchipip boom hwacha sifive-blocks sifive-cache example) \
 		 $(addprefix sims/firesim/sim/, . firesim-lib midas midas/targetutils)
+
 SCALA_SOURCES=$(foreach pkg,$(PACKAGES),$(call lookup_scala_srcs,$(base_dir)/$(pkg)/src/main/scala))
+
+lookup_scala_resources  = $(shell find -L $(1)/src/main/resources -type f 2> /dev/null)
+SCALA_RESOURCES=$(foreach pkg,$(PACKAGES),$(call lookup_scala_resources, $(base_dir)/$(pkg)))
+$(info $(SCALA_RESOURCES))
 
 #########################################################################################
 # rocket and testchipip classes
@@ -33,7 +38,7 @@ $(FIRRTL_JAR): $(call lookup_scala_srcs, $(CHIPYARD_FIRRTL_DIR)/src/main/scala)
 #########################################################################################
 # create simulation args file rule
 #########################################################################################
-$(sim_files): $(call lookup_scala_srcs,$(base_dir)/generators/utilities/src/main/scala) $(FIRRTL_JAR)
+$(sim_files): $(call lookup_scala_srcs,$(base_dir)/generators/utilities/src/main/scala) $(FIRRTL_JAR) $(SCALA_RESOURCES)
 	cd $(base_dir) && $(SBT) "project utilities" "runMain utilities.GenerateSimFiles -td $(build_dir) -sim $(sim_name)"
 
 #########################################################################################
