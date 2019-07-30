@@ -469,6 +469,17 @@ jobs:
 workflows:
     version: 2
     build-and-test-rebar-integration:
+     triggers:
+       - schedule:
+           cron: "0 0 * * *"
+           filters:
+             branches:
+               only:
+                 # TODO: Add master here
+                 - dev
+     jobs:
+       - test
+
         jobs:
             # Make the toolchains
             - install-riscv-toolchain
