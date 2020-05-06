@@ -382,3 +382,23 @@ class RingSystemBusRocketConfig extends Config(
   new freechips.rocketchip.subsystem.WithNExtTopInterrupts(0) ++
   new freechips.rocketchip.subsystem.WithNBigCores(1) ++
   new freechips.rocketchip.system.BaseConfig)
+
+// local
+class JtagRocketConfig extends Config(
+  new chipyard.iobinders.WithUARTAdapter ++                      // display UART with a SimUARTAdapter
+  new chipyard.iobinders.WithTieOffInterrupts ++                 // tie off top-level interrupts
+  new chipyard.iobinders.WithSimAXIMem ++
+  new chipyard.iobinders.WithSimDebug ++                         // add SimJtag and SimSerial, use both to drive sim
+  new chipyard.iobinders.WithSimSerial ++                        // drive TSI with SimSerial for testing
+  new testchipip.WithTSI ++                                      // use testchipip serial offchip link
+  new chipyard.config.WithNoGPIO ++                              // no top-level GPIO pins (overrides default set in sifive-blocks)
+  new chipyard.config.WithBootROM ++                             // use default bootrom
+  new chipyard.config.WithUART ++                                // add a UART
+  new freechips.rocketchip.subsystem.WithEdgeDataBits(128) ++        // 128-bit bus
+  new freechips.rocketchip.subsystem.WithExtMemSize((1<<28) * 1L) ++ // use 512MB external memory
+  new freechips.rocketchip.subsystem.WithNoMMIOPort ++           // no top-level MMIO master port (overrides default set in rocketchip)
+  new freechips.rocketchip.subsystem.WithNoSlavePort ++          // no top-level MMIO slave port (overrides default set in rocketchip)
+  new freechips.rocketchip.subsystem.WithJtagDTM ++
+  new freechips.rocketchip.subsystem.WithNExtTopInterrupts(0) ++ // no external interrupts
+  new freechips.rocketchip.subsystem.WithNBigCores(1) ++         // single rocket-core
+  new freechips.rocketchip.system.BaseConfig)                    // "base" rocketchip system
