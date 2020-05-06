@@ -400,5 +400,5 @@ class JtagRocketConfig extends Config(
   new freechips.rocketchip.subsystem.WithNoSlavePort ++          // no top-level MMIO slave port (overrides default set in rocketchip)
   new freechips.rocketchip.subsystem.WithJtagDTM ++
   new freechips.rocketchip.subsystem.WithNExtTopInterrupts(0) ++ // no external interrupts
-  new freechips.rocketchip.subsystem.WithNBigCores(1) ++         // single rocket-core
+  new freechips.rocketchip.subsystem.WithNSmallCores(1) ++       // single rocket-core
   new freechips.rocketchip.system.BaseConfig)                    // "base" rocketchip system
