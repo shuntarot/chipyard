@@ -27,9 +27,12 @@ class System(implicit p: Parameters) extends Subsystem
   with CanHaveMasterAXI4MemPort
   with CanHaveMasterAXI4MMIOPort
   with CanHaveSlaveAXI4Port
-  with HasPeripheryBootROM
+  // with HasPeripheryBootROM
 {
   override lazy val module = new SystemModule(this)
+  // Replace BootROM with MaskROM
+  val maskROMParams = MaskROMParams(address = 0x10000, name = "BootROM")
+  val maskROM = MaskROM.attach(maskROMParams, sbus)
 }
 
 /**
@@ -41,5 +44,7 @@ class SystemModule[+L <: System](_outer: L) extends SubsystemModuleImp(_outer)
   with CanHaveMasterAXI4MemPortModuleImp
   with CanHaveMasterAXI4MMIOPortModuleImp
   with CanHaveSlaveAXI4PortModuleImp
-  with HasPeripheryBootROMModuleImp
-  with DontTouch
+  // with HasPeripheryBootROMModuleImp
+  with DontTouch {
+    global_reset_vector := 0x10040.U
+  }
